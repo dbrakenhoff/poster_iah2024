@@ -1,0 +1,104 @@
+\documentclass[17pt, a0paper, portrait, margin=0mm, innermargin=5mm, blockverticalspace=7mm, colspace=6.5mm, subcolspace=6.5mm]{tikzposter}
+
+% comment: screenshot plaatjes max 15cm als fullscreen screenshot
+
+\input{preamble}
+
+% tikz for flowchart
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows, positioning, fit}
+\tikzstyle{io} = [trapezium, trapezium left angle=80, trapezium right angle=100, text width=7.5cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{process} = [rectangle, text width=11cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{select} = [rectangle, text width=11cm, minimum height=1cm, text centered, draw=black, rounded corners]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{document}
+
+\maketitle
+
+\begin{columns}
+\column{0.5}
+% Introduction
+  \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Introduction}{
+    \begin{multicols}{2}
+    
+        The analytic element method (AEM) is a gridless technique for modeling groundwater flow problems in which each feature that affects groundwater flow is described using an analytical solution. Superposition of these solutions can be used to gain insight into complex geohydrological problems. The advantages of AEM are that no spatial or temporal discretization is required and that the locations of elements are exact. The head can be computed at any location and at any time within the model domain. One disadvantage is that the computation of the head requires computing the contribution of each element in the model, causing models with many elements to become somewhat computationally intensive. Though computational solutions exist to mitigate these downsides, finite difference groundwater models such as Modflow 6 are highly efficient and capable of modeling large-scale heterogeneous groundwater flow problems. However, these numerical groundwater models require both temporal and spatial discretization. This requires the modeler to make choices that fit the problem. In mixed-scale problems, e.g. local head changes in a large aquifer system, tradeoffs between computation time and level of detail have to be considered.
+        
+        \vspace{3mm}
+        
+        The goal of this research is to combine the strengths of both modeling techniques by tightly coupling AEM with a finite difference model. In this fashion, a block of finite difference cells is replaced by an AEM model. Both models are solved simultaneously, which satisfies the water balance. Specially developed analytic line-elements facilitate the communication between the two models. Benchmark problems showcase the accuracy of the implementation and the challenges that arise from coupling numerical and analytic models. A real-world example problem is presented in which a numerical model is used to investigate regional groundwater flow, while the analytic model is used to get detailed local results around a well field. 
+    
+    \end{multicols}
+
+}
+
+    \column{0.25}
+    \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Analytic Element Models}{
+   
+        The Analytic Element Method is a gridless method in which each feature affecting groundwater flow is represented by an analytic solution. These features are also referred to as elements. Superposition of multiple elements allows modeling of complex groundwater flow problems. 
+        
+        Advantages:
+        \begin{itemize}
+            \item no spatial or temporal discretization required
+            \item Features can be located exactly where they lie in reality, no snapping to a grid
+        \end{itemize}
+        Disadvantages:
+        \begin{itemize}
+            \item Modeling highly heterogenous systems requires a lot of elements
+            \item computationally intesive for large-scale problems
+        \end{itemize}   
+}
+
+    \column{0.25}
+    \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Finite Difference Models}{
+   
+        Finite Differences
+        
+        Advantages:
+        \begin{itemize}
+            \item 
+        \end{itemize}
+        Disadvantages:
+        \begin{itemize}
+            \item 
+        \end{itemize}   
+}
+
+\end{columns}
+
+\begin{columns}
+    
+    \column{0.5}
+    \block[bodyverticalshift=-8mm]{Analytic Model of a Finite Difference Cell}{
+
+        \begin{multicols}{2}
+    
+        Tightly coupling an AEM model and a FD model requires communication between the two models. The water balance across the boundary between the two models must be met. Elements are derived to facilitate the communication between the two models.
+    
+        \end{multicols}
+    
+    
+    }
+    
+    \column{0.5}
+    \block[bodyverticalshift=-8mm]{General Head Boundary Line Element}{
+        \begin{multicols}{2}
+        \end{multicols}
+    
+    }
+
+    \block[bodyverticalshift=-8mm]{References}{
+        % \vspace{-5mm}
+        \begingroup
+        \renewcommand{\section}[2]{}%
+        % \scriptsize
+        \small
+        \bibliography{references.bib}
+        \endgroup
+    }
+    
+\node [above left,font=\Huge,outer sep=7.5mm, align=left] at (bottomleft -| topright) {\color{white} \sffamily \Large \emailsymbol d.brakenhoff@artesia-water.nl};
+
+\end{columns}
+
+\end{document}

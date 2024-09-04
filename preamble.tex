@@ -1,0 +1,229 @@
+\tikzposterlatexaffectionproofoff
+
+% \title{\parbox{\linewidth}{\centering Estimating drawdown using time series analysis}}
+\title{\parbox{\linewidth}{\centering Going off-grid locally: Coupling analytic elements with finite difference models}}
+\author{Davíd A. Brakenhoff$\,^{1,2}$, Mark Bakker$\,^2$}
+\institute{$^1\,$Artesia B.V. $^2\,$Delft University of Technology}
+
+% kleurcode Modflow and More logo: 00234B, omgezet naar 065887 (comp 004798)
+% colorthemes
+% IAH: 116699, cccccc, c3312f
+% https://colorhunt.co/palette/
+% 07689fa2d5f2fafafaff7e67: FF7E67, A2D5F2, 07689F
+% martin: FF7E67, A2D5F2, , F2BFA2 (comp. A2D5F2)
+
+% define colors in HEX code (https://colorhunt.co/palette/07689fa2d5f2fafafaff7e67)
+% \newcommand{\colorTitle}{07689F}            % title block main color
+% \newcommand{\colorTitleGradient}{07689F}    % title block gradient color
+% \newcommand{\colorBlockTitle}{d97669}       % color of block title
+% \newcommand{\colorBlock}{ffe2dd}            % color of blocks
+\newcommand{\colorBlockTitleText}{FFFFFF}   % color of block title text
+
+% define colors in HEX code (https://colorhunt.co/palette/e7e6e1f7f6e7f2a154314e52)
+% \newcommand{\colorTitle}{314E52}            % title block main color
+% \newcommand{\colorTitleGradient}{314E52}    % title block gradient color
+% \newcommand{\colorBlockTitle}{F2A154}       % color of block title
+% \newcommand{\colorBlock}{F7F6E7}            % color of blocks
+% \newcommand{\colorBlockTitleText}{FFFFFF}   % color of block title text
+
+% define colors in HEX code (https://colorhunt.co/palette/062c3005595be2d784f5f5f5)
+% \newcommand{\colorTitle}{05595B}            % title block main color
+% \newcommand{\colorTitleGradient}{05595B}    % title block gradient color
+% \newcommand{\colorBlockTitle}{E2D784}       % color of block title
+% \newcommand{\colorBlock}{F5F5F5}            % color of blocks
+% \newcommand{\colorBlockTitleText}{FFFFFF}   % color of block title text
+
+% define colors in HEX code (https://colorhunt.co/palette/feece9ccd1e4fe7e6d2f3a8f)
+% \newcommand{\colorTitle}{2F3A8F}            % title block main color
+% \newcommand{\colorTitleGradient}{2F3A8F}    % title block gradient color
+% \newcommand{\colorBlockTitle}{FE7E6D}       % color of block title
+% \newcommand{\colorBlock}{FEECE9}            % color of blocks
+% \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
+
+% define colors in HEX code
+\newcommand{\colorTitle}{0047ab}            % title block main color, cobalt
+\newcommand{\colorTitleGradient}{0047ab}    % title block gradient color, cobalt
+% \newcommand{\colorTitle}{921224}            % title block main color, darkred
+% \newcommand{\colorTitleGradient}{921224}    % title block gradient color, darkred
+\newcommand{\colorBlockTitle}{95c8e8}       % color of block title
+\newcommand{\colorBlock}{EEEEEE}            % color of blocks
+% \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
+
+
+
+% new color definitions for Desert theme
+\definecolorpalette{GrayOrangeBlue}{
+    \definecolor{colorOne}{HTML}{\colorTitle} %bovenkant
+    \definecolor{colorTwo}{HTML}{\colorBlock} %tekstvakken
+    \definecolor{colorThree}{HTML}{\colorBlockTitle} %tekstkoppen
+}
+% bottom color for title block and top color for lower block
+\definecolor{gradientcolor}{HTML}{\colorTitleGradient}
+
+% Remove gradient in title block
+\definetitlestyle{VerticalShading}{
+	width=\paperwidth, roundedcorners=0, linewidth=0pt, innersep=1.5cm,
+	titletotopverticalspace=0mm, titletoblockverticalspace=20mm,
+	titlegraphictotitledistance=10pt, titletextscale=1
+}{
+   \draw[draw=none, bottom color=gradientcolor, top color=colorOne]%
+   (\titleposleft,\titleposbottom) rectangle (\titleposright,\titlepostop);
+}
+% remove gradient in bottom (modify top color=...)
+\definebackgroundstyle{BottomVerticalGradation}{
+	\draw[draw=none, line width=0pt, bottom color=colorOne, 
+	    top color=gradientcolor] (bottomleft) rectangle ($(bottomleft)+(\textwidth,2.5)$); 
+}
+
+% remove gradient in text block titles (modify right color=...)
+\defineblockstyle{Slide}{
+	titlewidthscale=1, bodywidthscale=1, titleleft,
+	titleoffsetx=0pt, titleoffsety=0pt, bodyoffsetx=0pt, bodyoffsety=0pt,
+	bodyverticalshift=0pt, roundedcorners=0, linewidth=0pt, titleinnersep=1cm,
+	bodyinnersep=1cm 
+}{
+	\ifBlockHasTitle%
+		\draw[draw=none, left color=colorThree, right color=colorThree]
+		   (blocktitle.south west) rectangle (blocktitle.north east);
+	\fi%
+	\draw[draw=none, fill=blockbodybgcolor] %
+		(blockbody.north west) [rounded corners=15] -- (blockbody.south west) --
+		(blockbody.south east) [rounded corners=0]-- (blockbody.north east) -- cycle;
+}
+% Turn off gray gradient in title and bottom bar
+\definecolorstyle{sampleColorStyle} {
+    \definecolor{colorOne}{HTML}{\colorTitle} %bovenkant
+    \definecolor{colorTwo}{HTML}{\colorBlock} %tekstvakken
+    \definecolor{colorThree}{HTML}{\colorBlockTitle} %tekstkoppen
+    \definecolor{gradientcolor}{HTML}{\colorTitleGradient}
+    \definecolor{blocktitlefgcolor}{HTML}{\colorBlockTitleText}
+}{
+%     % Background Colors
+    \colorlet{backgroundcolor}{white}
+    \colorlet{framecolor}{colorOne}
+%     % Title Colors
+    \colorlet{titlefgcolor}{white}
+    \colorlet{titlebgcolor}{gradientcolor}
+%     % Block Colors
+    % \colorlet{blocktitlebgcolor}{white}
+    \colorlet{blocktitlefgcolor}{blocktitlefgcolor}
+    % \colorlet{blockbodybgcolor}{white}
+    % \colorlet{blockbodyfgcolor}{white}
+}
+
+\usetheme{Desert} % uses edited colorpalatte if GrayOrangeBlue
+\usebackgroundstyle{Filled}
+\usetitlestyle{VerticalShading}  % use Filled and change \colorTitleGradient to avoid gradient?
+\usecolorstyle[colorPalette=GrayOrangeBlue]{sampleColorStyle}
+
+\makeatletter
+\renewcommand\TP@maketitle{\centering
+\begin{minipage}[c][][t]{175mm}
+    \includegraphics[width=80mm]{logo/logo_artesia.png}
+    \hfill
+    \includesvg[width=80mm]{logo_tud.svg}
+\end{minipage}
+\hfill
+\begin{minipage}[c][][c]{475mm}
+    \centering
+    \color{titlefgcolor}
+    {\bfseries \Huge \sc \sffamily \@title \par}
+    \vspace*{5mm}
+    {\LARGE \sc \sffamily \@author \par}
+    \vspace*{5mm}
+    {\Large \sffamily \@institute \par}
+\end{minipage}
+\hfill
+\begin{minipage}[c][][t]{150mm}
+    \centering
+    \includegraphics[width=90mm]{logo/logo_iah.png}
+\end{minipage}
+
+}%
+\makeatother
+
+\usepackage[square, sort, numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{multicol}
+\setlength{\columnsep}{10mm}
+
+\usepackage{xpatch}
+\xpatchcmd{\block}{\bf\LARGE\color{blocktitlefgcolor}}{\sffamily\bfseries\LARGE\color{blocktitlefgcolor}}{}{}
+
+\usepackage{xcolor}
+
+ % Subcolumns environment
+\makeatletter
+\newenvironment{subcolumns}{
+    \ifTP@columnEnvironment
+        \TP@subcolumnEnvironmenttrue
+        \setlength{\TP@subcolcenter}{\TP@colcenter-0.5\colwidth-\TP@subcolspace}
+        \global\TP@subcolcenter=\TP@subcolcenter
+        \global\TP@subcoltop=\TP@blocktop
+        \global\TP@subcolbottom=\TP@blocktop
+        \subcolwidth=0pt
+    \fi
+}{
+    \TP@subcolumnEnvironmentfalse
+    \global\TP@blocktop=\TP@subcolbottom
+}
+
+ % Subcolumn
+\gdef\subcolumn#1{  % #1: relative width
+    \ifTP@subcolumnEnvironment
+        \normalsize
+        \setlength{\TP@blocktop}{\TP@subcoltop}
+        \setlength{\TP@subcolcenter}{\TP@subcolcenter+0.5\subcolwidth+\TP@subcolspace}
+        \setlength{\subcolwidth}{#1\colwidth+#1\TP@subcolspace-\TP@subcolspace}
+        \setlength{\TP@subcolcenter}{\TP@subcolcenter+0.5\subcolwidth}
+    \fi
+}
+\makeatother
+
+\makeatletter
+\renewenvironment{tikzfigure}[1][]{
+  \def \rememberparameter{#1}
+  \vspace{6pt}
+  \refstepcounter{figurecounter}
+  \begin{center}
+  }{
+    \ifx\rememberparameter\@empty
+    \else %nothing
+    \\[7pt]
+    {\RaggedRight \small Fig.~\thefigurecounter: \rememberparameter}
+    \fi 
+  \end{center}
+}
+\makeatother
+
+\makeatletter
+\newcounter{tablecounter}
+\newenvironment{tikztable}[1][]{
+  \def \rememberparameter{#1}
+  \vspace{10pt}
+  \refstepcounter{tablecounter}
+  \begin{center}
+  }{
+    \ifx\rememberparameter\@empty
+    \else
+    \\[15pt]
+    {\RaggedRight \small Tab.~\thetablecounter: \rememberparameter}
+    \fi
+  \end{center}
+}
+\makeatother
+
+\usepackage[square, sort, numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{svg}
+\usepackage{booktabs}
+\usepackage{multicol}
+\setlength{\columnsep}{10mm}
+\usepackage[font=small,skip=-2pt]{caption}
+\usepackage{graphics}
+\usepackage{vwcol}
+\usepackage{fontawesome5}
+
+\renewcommand*{\emailsymbol}{{\small\faIcon[solid]{envelope}}~} % alternative: \faInbox
