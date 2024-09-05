@@ -19,7 +19,7 @@
 \begin{columns}
 \column{0.5}
 % Introduction
-  \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Introduction}{
+  \block[bodyoffsety=5mm,titleoffsety=5mm,bodyverticalshift=-5mm]{Introduction}{
     \begin{multicols}{2}
     
         The analytic element method (AEM) is a gridless technique for modeling groundwater flow problems in which each feature that affects groundwater flow is described using an analytical solution. Superposition of these solutions can be used to gain insight into complex geohydrological problems. The advantages of AEM are that no spatial or temporal discretization is required and that the locations of elements are exact. The head can be computed at any location and at any time within the model domain. One disadvantage is that the computation of the head requires computing the contribution of each element in the model, causing models with many elements to become somewhat computationally intensive. Though computational solutions exist to mitigate these downsides, finite difference (FD) groundwater models such as Modflow 6 are highly efficient and capable of modeling large-scale heterogeneous groundwater flow problems. However, these numerical groundwater models require both temporal and spatial discretization. This requires the modeler to make choices that fit the problem. In mixed-scale problems, e.g. local head changes in a large aquifer system, trade-offs between computation time and level of detail have to be considered.
@@ -69,7 +69,7 @@
     }
 
     \column{0.25}
-    \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Analytic Element Models}{
+    \block[bodyoffsety=5mm,titleoffsety=5mm,bodyverticalshift=-5mm]{Analytic Element Models}{
 
         \begin{tikzfigure}[An example of an Analytic Element Model.\par]
             \includegraphics[width=\linewidth]{figures/AEM_example.png}
@@ -89,12 +89,19 @@
         \begin{itemize}[noitemsep]
             \item Modeling highly heterogeneous systems requires a lot of elements and is computationally intensive.
         \end{itemize}   
+
+        \vspace{3mm}
+        
+        Implementation:
+        \begin{itemize}[noitemsep]
+            \item The analytic solutions used in the research were programmed in Python following the TimML object-oriented structure \citep{bakker_writing_2009,mark_bakker_analytical_2022}. Many more elements were added as part of researching the most flexible and robust method for coupling with FD models.
+        \end{itemize}
 }
 
     \column{0.25}
-    \block[bodyoffsety=15mm,titleoffsety=15mm,bodyverticalshift=-5mm]{Finite Difference Models}{
+    \block[bodyoffsety=5mm,titleoffsety=5mm,bodyverticalshift=-5mm]{Finite Difference Models}{
 
-        \begin{tikzfigure}[An example of a Finite Difference Model.\par]
+        \begin{tikzfigure}[An example of a Finite Difference Model \citep{hughes_flopy_2023}.\par]
             \includegraphics[width=\linewidth]{figures/FD_example.png}
         \end{tikzfigure}
 
@@ -103,13 +110,22 @@
         Advantages:
         \begin{itemize}[noitemsep]
             \item Fast and efficient for large-scale heterogeneous problems.
+            \item Large-scale regional models are often available as finite difference groundwater models.
         \end{itemize}
 
         \vspace{3mm}
         
         Disadvantages:
         \begin{itemize}[noitemsep]
+            \item Spatial and temporal discretization have to be defined.
             \item Grid has to be adapted to local features.
+        \end{itemize}   
+
+        \vspace{3mm}
+        
+        Implementation:
+        \begin{itemize}[noitemsep]
+            \item A simple finite difference model for single confined aquifers was used in the research. The finite difference implementation was programmed in Python. Modflow 6 was not initially used as accessing and modifying the relevant parts of the code was inconvenient at this stage of the  project. 
         \end{itemize}   
 
         \vfill
@@ -122,15 +138,15 @@
     \block[bodyverticalshift=-8mm]{General Head Boundary Line Element}{
         \begin{multicols}{2}
             
-        The boundary elements facilitate the communication between the AEM model and the FD model. The boundary element is set up as general head boundary. The normal flux $q_n$ over the element is uniform but unknown. The flux is driven by the difference between some specified head $h_\text{FD}$ and the mean head along the element $h_m$, multiplied by a conductance term $C$.
+        The boundary elements facilitate the communication between the AEM model and the FD model. The boundary element is set up as general head boundary. The normal flux $q_n$ over the element is uniform but unknown. The flux is driven by the difference between some specified head $h_\text{FD}$ and the mean head along the element $h_m$, multiplied by a conductance term $C$. The conductance is computed from the FD cell midpoint to the cell boundary. 
 
         \begin{equation}\label{eqn:ghb}
             Q_n = q_n \Delta y \Delta z = C \left( h_\text{FD} - h_m \right) 
         \end{equation}
 
-        The conductance is computed from the FD cell midpoint to the cell boundary. 
+        \vspace{3mm}
         
-        The analytic solution of the boundary element is derived through separation of variables in elliptic coordinates. The solution for line-sinks and line-doublets 
+        The analytic solution of the boundary element is derived through separation of variables in elliptic coordinates \citep{bakker_derivation_2008}. The solutions for line-sinks and line-doublets are added together as this gave the most accurate results. 
         
         \begin{tikzfigure}[Schematic showing the general head boundary element between a FD cell and an AEM model.\par]
             \includegraphics[height=80mm]{figures/boundary_element.png}
@@ -158,7 +174,7 @@
         Solving for $\vec{x}$ yields the heads of the FD cells and the parameters of the analytic elements.
         
         \begin{tikzfigure}[The coefficients of the equations (matrix $\mathbf{A}$) for the coupled FD+AEM solution.\par]
-            \includegraphics[height=100mm]{figures/mat_fd+aem.png}
+            \includegraphics[height=120mm]{figures/mat_fd+aem.png}
         \end{tikzfigure}
     \end{multicols}
     
@@ -172,15 +188,14 @@
         
         \begin{multicols}{3}
         
-            Two wells are pumping from a confined aquifer with uniform flow from west to east. The eastern well is pumping at 75 m$^3$/d and the western well is pumping at 50 m$^3$/d. 
+            Two wells are pumping from a confined aquifer with uniform flow from west to east. The eastern well is pumping at 75 m$^3$/d and the western well is pumping at 50 m$^3$/d. The FD model dimensions are 5$\times$5. 
 
-            \begin{tikztable}[Model properties\par]
+            \begin{tikztable}[Model properties\par\label{tab:modelparams}]
                 \centering
                 \begin{tabular}{lrl}
                     \toprule
                     Parameter & Value & Units      \\
                     \midrule
-                    FD model dimensions & 5$\times$5 & - \\
                     Aquifer thickness & 10 & m \\
                     Horizontal conductivity & 10 & m/d \\
                     Porosity & 0.3 & - \\
@@ -208,33 +223,20 @@
 
         \begin{multicols}{3}
 
-            An injection and a pumping well of equal magnitude supply and extract water in a confined aquifer at a rate of 150 m$^3$/d. Both wells lie within the same cell in the FD model.
-            
-            \begin{tikztable}[Model properties\par]
-                \centering
-                \begin{tabular}{lrl}
-                    \toprule
-                    Parameter & Value & Units      \\
-                    \midrule
-                    FD model dimensions & 11$\times$11 & - \\
-                    Aquifer thickness & 10 & m \\
-                    Horizontal conductivity & 10 & m/d \\
-                    Porosity & 0.3 & - \\
-                    \bottomrule
-                \end{tabular}
-            \end{tikztable}
+            An injection and a pumping well of equal magnitude supply and extract water in a confined aquifer at a rate of 150 m$^3$/d. Both wells lie within the same cell in the FD model. The model is bounded by a constant head boundary. The model parameters are shown in Table \ref{tab:modelparams}.
+
+            The FD model cannot compute a sensible solution since the net pumping rate within the cell is 0 m$^3$/d. The coupled FD+AEM solution provides a reasonable estimate of the flow-net and the 15-year capture zone compared to the exact solution. 
 
             \begin{tikzfigure}[Example model with injection and pumping in one cell.\par]
                 \includegraphics[width=0.75\linewidth]{figures/b05_fd_model_boundaries.png}
             \end{tikzfigure}
 
-            % \begin{tikzfigure}[Flow net of the coupled FD+AEM solution versus the exact solution.\par]
-            %     \includegraphics[width=\linewidth]{figures/b05_flow_net.png}
-            % \end{tikzfigure}
-
-            The FD model isn't able to compute a sensible solution since the net pumping rate within the cell is 0 m$^3$/d. The coupled FD+AEM solution provides a reasonable estimate of the flow-net and the 15-year capture zone compared to the exact solution. 
-
+            \begin{tikzfigure}[Flow net of the coupled FD+AEM solution and the exact solution.\par]
+                \includegraphics[width=\linewidth]{figures/b05_flow_net.png}
+            \end{tikzfigure}
+            
         \end{multicols}
+
 
         \begin{tikzfigure}[Comparison of particle tracks for FD model, coupled FD+AEM model and the exact analytic solution.\par]
             \includegraphics[width=\linewidth]{figures/b05_capture_zone.png}
@@ -254,37 +256,27 @@
         \item General head boundary elements are flexible and satisfy the water balance. Using this element it should be straight-forward to replace multiple FD cells with an AEM model. 
         \item AEM code is written in Python and has an object-oriented structure similar to TimML and TTim. Elements developed in this research can be easily integrated into TimML or TTim.
     \end{itemize}
+
+    % \small
+    % \innerblock{Download}{Download poster as pdf: https://bit.ly/IAH2024}
     
     }
     
     \column{0.25}
     \block[bodyverticalshift=-8mm]{Next Steps}{
     \begin{itemize}
-        \item Comparisons with local grid refinement in Modflow 6.
-        \item Extend solution to semi-confined flow in multi-aquifer systems.
+        \item Extend solution to semi-confined and transient flow in multi-aquifer systems.
         \item Integrate analytic elements into the TimML/TTim Python packages. 
         \item Replace the top-layer (e.g. drainage system) in a FD model with an AEM model.
-        \item Test method on a real-world example, e.g. compute flow around a drinking water production well field. 
-        \item Flip the  FD as local refinement within a regional AEM model. 
-        \item Couple directly with Modflow 6 using the Modflow API.
-        \item Create a MF6-AEM package. 
-        \item Extend solution to transient flow.
+        \item Test method on a real-world example, e.g. compute flow around a drinking water production well field.
+        \item Couple directly with Modflow 6 using the Modflow API. Create a MF6-AEM package. 
     \end{itemize}
 
     }    
-    
-    \column{0.25}
-    \block[bodyverticalshift=-30mm]{References}{
-        \nocite{*}
 
-        \footnotesize
-        \innerblock{
-        Contact\\\vspace{5mm}Download}{
-        d.brakenhoff@artesia-water.nl\\
-        \\
-        Download poster as pdf: https://bit.ly/IAH2024
-        }
-        
+    \column{0.25}
+    \block[bodyverticalshift=-8mm]{References}{
+        \nocite{*}     
         
         % \vspace{-5mm}
         \begingroup
@@ -294,9 +286,21 @@
         \bibliography{references.bib}
         \endgroup
     }
+
+    \column{0.25}
+    \block[bodyverticalshift=-8mm]{Link to PDF}{
+   
+    \vspace{3mm}
+    \centering
+    \includegraphics[height=120mm]{figures/bit.ly_IAH2024_FD_AEM.png}
+    }
+    
+    
+\end{columns}
+
+
     
 \node [above left,font=\Huge,outer sep=7.5mm, align=left] at (bottomleft -| topright) {\color{white} \sffamily \Large \emailsymbol d.brakenhoff@artesia-water.nl};
 
-\end{columns}
 
 \end{document}
