@@ -22,12 +22,8 @@
   \block[bodyoffsety=5mm,titleoffsety=5mm,bodyverticalshift=-5mm]{Introduction}{
     \begin{multicols}{2}
     
-        The analytic element method (AEM) is a gridless technique for modeling groundwater flow problems in which each feature that affects groundwater flow is described using an analytical solution. Superposition of these solutions can be used to gain insight into complex geohydrological problems. The advantages of AEM are that no spatial or temporal discretization is required and that the locations of elements are exact. The head can be computed at any location and at any time within the model domain. One disadvantage is that the computation of the head requires computing the contribution of each element in the model, causing models with many elements to become somewhat computationally intensive. Though computational solutions exist to mitigate these downsides, finite difference (FD) groundwater models such as Modflow 6 are highly efficient and capable of modeling large-scale heterogeneous groundwater flow problems. However, these numerical groundwater models require both temporal and spatial discretization. This requires the modeler to make choices that fit the problem. In mixed-scale problems, e.g. local head changes in a large aquifer system, trade-offs between computation time and level of detail have to be considered.
+        The analytic element method (AEM) is a gridless technique for modeling groundwater flow problems in which each feature that affects groundwater flow is described using an analytical solution. Superposition of these solutions can be used to gain insight into complex geohydrological problems. The advantages of AEM are that no spatial or temporal discretization is required and that the locations of elements are exact. The head can be computed at any location and at any time within the model domain. One disadvantage is that the computation of the head requires computing the contribution of each element in the model, causing models with many elements to become somewhat computationally intensive. Though computational solutions exist to mitigate these downsides, finite difference (FD) groundwater models such as Modflow 6 are highly efficient and capable of modeling large-scale heterogeneous groundwater flow problems. However, these numerical groundwater models require both temporal and spatial discretization. This requires the modeler to make choices that fit the problem. In mixed-scale problems, e.g. local head changes in a large aquifer system, trade-offs between computation time and level of detail have to be considered. Combining the strengths of both modeling techniques provides the large-scale performance of FD models and adds the gridless refinement of AEM models.
         
-        \vspace{3mm}
-
-        % In this fashion, a block of finite difference cells is replaced by an AEM model. Both models are solved simultaneously, which satisfies the water balance. Specially developed analytic line-elements facilitate the communication between the two models. Benchmark problems showcase the accuracy of the implementation and the challenges that arise from coupling numerical and analytic models.
-    
     \end{multicols}
 
     \vspace{5mm}
@@ -49,7 +45,7 @@
         \begin{itemize}[noitemsep]
             \item boundary elements to control the fluxes in/out of the AEM model
             \item any internal elements that affect groundwater flow (e.g. wells)
-            \item and a constant
+            \item a constant
         \end{itemize}
 
         \vspace{3mm}
@@ -79,7 +75,7 @@
         
         Advantages:
         \begin{itemize}[noitemsep]
-            \item No grid! Head/flow at any point no spatial or temporal discretization required.
+            \item No grid, head/flow can be computed at any point.
             \item Features can be modeled at exact locations, no snapping to grid.
         \end{itemize}
         
@@ -138,17 +134,19 @@
     \block[bodyverticalshift=-8mm]{General Head Boundary Line Element}{
         \begin{multicols}{2}
             
-        The boundary elements facilitate the communication between the AEM model and the FD model. The boundary element is set up as general head boundary. The normal flux $q_n$ over the element is uniform but unknown. The flux is driven by the difference between some specified head $h_\text{FD}$ and the mean head along the element $h_m$, multiplied by a conductance term $C$. The conductance is computed from the FD cell midpoint to the cell boundary. 
+        The boundary elements facilitate the communication between the AEM model and the FD model. The boundary element is set up as general head boundary. The normal flux $q_n$ over the element is uniform but unknown. The flux is driven by the difference between some specified head $h_\text{FD}$ and the mean head along the element $h_m$, multiplied by a conductance term $C$ (Eq. \ref{eqn:ghb}). The conductance is computed from the FD cell midpoint to the cell boundary. 
 
+        \vspace{5mm}
+        
         \begin{equation}\label{eqn:ghb}
             Q_n = q_n \Delta y \Delta z = C \left( h_\text{FD} - h_m \right) 
         \end{equation}
+        
+        The analytic solution of the boundary element is derived through separation of variables in elliptic coordinates \citep{bakker_derivation_2008}. The solutions for a line-sink and line-doublet are added together as this gave the most accurate results. 
 
-        \vspace{3mm}
-        
-        The analytic solution of the boundary element is derived through separation of variables in elliptic coordinates \citep{bakker_derivation_2008}. The solutions for line-sinks and line-doublets are added together as this gave the most accurate results. 
-        
-        \begin{tikzfigure}[Schematic showing the general head boundary element between a FD cell and an AEM model.\par]
+        \vspace{10mm}
+                
+        \begin{tikzfigure}[Schematic showing the general head boundary element between an FD cell and an AEM model.\par]
             \includegraphics[height=80mm]{figures/boundary_element.png}
         \end{tikzfigure}
         
@@ -159,16 +157,16 @@
     \block[bodyverticalshift=-8mm]{Solving AEM and FD simultaneously}{
 
     \begin{multicols}{2}
-        The equations for the FD model and AEM model are written in matrix form $\mathbf{A}\vec{x} = b$.    
-        The FD equation for replaced cell is removed. The equations for the neighboring FD cells are modified:
         
+        The equations for the FD model and AEM model are written in matrix form $\mathbf{A}\vec{x} = b$.    
+        The FD equation for the replaced cell is removed. The equations of the neighboring FD cells are modified:
         
         \begin{itemize}[noitemsep]
             \item the mean head along the boundary elements is substituted into the FD equations
-            \item The conductances are adjusted accordingly, from cell midpoint to cell boundary 
+            \item the conductances are adjusted accordingly, from cell midpoint to cell boundary 
         \end{itemize} 
         
-        The AEM equations use the head from the neighboring FD cells to compute the the flux entering the AEM model (Eq. \ref{eqn:ghb}). 
+        The AEM equations use the head from the neighboring FD cells to compute the flux entering the AEM model (Eq. \ref{eqn:ghb}). 
 
         \vspace{3mm}
         Solving for $\vec{x}$ yields the heads of the FD cells and the parameters of the analytic elements.
@@ -223,7 +221,7 @@
 
         \begin{multicols}{3}
 
-            An injection and a pumping well of equal magnitude supply and extract water in a confined aquifer at a rate of 150 m$^3$/d. Both wells lie within the same cell in the FD model. The model is bounded by a constant head boundary. The model parameters are shown in Table \ref{tab:modelparams}.
+            An injection and a pumping well of equal magnitude supply and extract water in a confined aquifer at a rate of 150 m$^3$/d. Both wells lie within the same cell in the FD model. The model is bounded by a constant head boundary. The model parameters are also shown in Table \ref{tab:modelparams}.
 
             The FD model cannot compute a sensible solution since the net pumping rate within the cell is 0 m$^3$/d. The coupled FD+AEM solution provides a reasonable estimate of the flow-net and the 15-year capture zone compared to the exact solution. 
 
@@ -251,7 +249,7 @@
     \block[bodyverticalshift=-8mm]{Conclusions}{
     \setulcolor{colorBlockTitle}
     \begin{itemize}
-        \item AEM has potential as an local refinement method for a FD model. The head and flow can be computed at any point within the AEM cell: \ul{infinite refinement of cell!}
+        \item AEM has potential as a local refinement method for an FD model. The head and flow can be computed at any point within the AEM cell: \ul{infinite refinement of cell}.
         \item Promising early results coupling FD and AEM models for wells in a single confined aquifer.
         \item General head boundary elements are flexible and satisfy the water balance. Using this element it should be straight-forward to replace multiple FD cells with an AEM model. 
         \item AEM code is written in Python and has an object-oriented structure similar to TimML and TTim. Elements developed in this research can be easily integrated into TimML or TTim.
@@ -267,9 +265,9 @@
     \begin{itemize}
         \item Extend solution to semi-confined and transient flow in multi-aquifer systems.
         \item Integrate analytic elements into the TimML/TTim Python packages. 
-        \item Replace the top-layer (e.g. drainage system) in a FD model with an AEM model.
+        \item Replace the top-layer (e.g. drainage system) in an FD model with an AEM model.
         \item Test method on a real-world example, e.g. compute flow around a drinking water production well field.
-        \item Couple directly with Modflow 6 using the Modflow API. Create a MF6-AEM package. 
+        \item Couple directly with Modflow 6 using the Modflow API. Create an MF6-AEM package. 
     \end{itemize}
 
     }    
