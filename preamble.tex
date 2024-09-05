@@ -41,15 +41,36 @@
 % \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
 
 % define colors in HEX code
-\newcommand{\colorTitle}{0047ab}            % title block main color, cobalt
-\newcommand{\colorTitleGradient}{0047ab}    % title block gradient color, cobalt
-% \newcommand{\colorTitle}{921224}            % title block main color, darkred
-% \newcommand{\colorTitleGradient}{921224}    % title block gradient color, darkred
-\newcommand{\colorBlockTitle}{95c8e8}       % color of block title
-\newcommand{\colorBlock}{EEEEEE}            % color of blocks
+% \newcommand{\colorTitle}{1A5319}            % title block main color, cobalt
+% \newcommand{\colorTitleGradient}{1A5319}    % title block gradient color, cobalt
+% % \newcommand{\colorTitle}{921224}            % title block main color, darkred
+% % \newcommand{\colorTitleGradient}{921224}    % title block gradient color, darkred
+% \newcommand{\colorBlockTitle}{508D4E}       % color of block title
+% \newcommand{\colorBlock}{FFFFFF}            % color of blocks
+% \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
+
+% define colors in HEX code (current fave)
+% \newcommand{\colorTitle}{003C43}            % title block main color, cobalt
+% \newcommand{\colorTitleGradient}{003C43}    % title block gradient color, cobalt
+% % \newcommand{\colorTitle}{921224}            % title block main color, darkred
+% % \newcommand{\colorTitleGradient}{921224}    % title block gradient color, darkred
+% % \newcommand{\colorBlockTitle}{0B666A}       % color of block title
+% \newcommand{\colorBlockTitle}{0c6f73}       % color of block title
+% \newcommand{\colorBlock}{FFFFFF}            % color of blocks
 % \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
 
 
+% define colors in HEX code (gekke optie)
+\newcommand{\colorTitle}{1230AE}            % title block main color, cobalt
+\newcommand{\colorTitleGradient}{1230AE}    % title block gradient color, cobalt
+% \newcommand{\colorTitle}{921224}            % title block main color, darkred
+% \newcommand{\colorTitleGradient}{921224}    % title block gradient color, darkred
+% \newcommand{\colorBlockTitle}{0B666A}       % color of block title
+\newcommand{\colorBlockTitle}{6C48C5}       % color of block title
+\newcommand{\colorBlock}{FFFFFF}            % color of blocks
+% \newcommand{\colorBlockTitleText}{062C30}   % color of block title text
+
+\definecolor{colorBlockTitle}{HTML}{6C48C5}
 
 % new color definitions for Desert theme
 \definecolorpalette{GrayOrangeBlue}{
@@ -121,7 +142,8 @@
 \begin{minipage}[c][][t]{175mm}
     \includegraphics[width=80mm]{logo/logo_artesia.png}
     \hfill
-    \includesvg[width=80mm]{logo_tud.svg}
+    % \includesvg[width=80mm]{logo/logo_tud.svg}
+    \includegraphics[width=80mm]{logo/logo_tudelft.png}
 \end{minipage}
 \hfill
 \begin{minipage}[c][][c]{475mm}
@@ -225,5 +247,7 @@
 \usepackage{graphics}
 \usepackage{vwcol}
 \usepackage{fontawesome5}
+\usepackage{color,soul}
+\usepackage{enumitem}
 
 \renewcommand*{\emailsymbol}{{\small\faIcon[solid]{envelope}}~} % alternative: \faInbox
